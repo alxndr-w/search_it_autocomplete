@@ -5,7 +5,7 @@ class rex_api_search_it_autocomplete_getSimilarWords extends rex_api_function
 
     protected $published = true;
 
-    function execute()
+    public function execute()
     {
 
         error_reporting(0);
@@ -14,11 +14,11 @@ class rex_api_search_it_autocomplete_getSimilarWords extends rex_api_function
         $q = rex_request('q', 'string', false);
 
         //modus für die ausgabe
-        $plugin = rex_plugin::get('search_it', 'autocomplete');
+        $addon = rex_addon::get('search_it_autocomplete');
 
-        $modus = $plugin->getConfig('modus');
-        $maxSuggestion = $plugin->getConfig('maxSuggestion');
-        $similarWordsMode = $plugin->getConfig('similarwordsmode');
+        $modus = $addon->getConfig('modus');
+        $maxSuggestion = $addon->getConfig('maxSuggestion');
+        $similarWordsMode = $addon->getConfig('similarwordsmode');
 
         if ($q != '') {
 
@@ -63,8 +63,9 @@ class rex_api_search_it_autocomplete_getSimilarWords extends rex_api_function
                             }
                         }
 
-                        if (count($ids) >= $maxSuggestion)
+                        if (count($ids) >= $maxSuggestion) {
                             break;
+                        }
                     }//enforeach
                 }//ifresults
 
@@ -78,7 +79,8 @@ class rex_api_search_it_autocomplete_getSimilarWords extends rex_api_function
 
                 if ($similarWordsMode == '0') {
 
-                    $sql = sprintf("
+                    $sql = sprintf(
+                        "
               SELECT keyword FROM `%s` WHERE ( keyword LIKE :keyword ) AND (clang = -1 OR clang = :clang) GROUP BY keyword ORDER BY count ",
                         rex::getTablePrefix() . rex::getTempPrefix() . 'search_it_keywords',
                     );
@@ -91,7 +93,8 @@ class rex_api_search_it_autocomplete_getSimilarWords extends rex_api_function
 
                 if ($similarWordsMode == '1') {
 
-                    $sql = sprintf("
+                    $sql = sprintf(
+                        "
               SELECT keyword FROM `%s` WHERE ( keyword LIKE :keyword OR soundex = :soundex  ) AND (clang = -1 OR clang = :clang) GROUP BY keyword ORDER BY count ",
                         rex::getTablePrefix() . rex::getTempPrefix() . 'search_it_keywords',
                     );
@@ -105,7 +108,8 @@ class rex_api_search_it_autocomplete_getSimilarWords extends rex_api_function
 
                 if ($similarWordsMode == '2') {
 
-                    $sql = sprintf("
+                    $sql = sprintf(
+                        "
               SELECT keyword FROM `%s` WHERE ( keyword LIKE :keyword OR metaphone = :metaphone  ) AND (clang = -1 OR clang = :clang) GROUP BY keyword ORDER BY count ",
                         rex::getTablePrefix() . rex::getTempPrefix() . 'search_it_keywords',
                     );
@@ -119,7 +123,8 @@ class rex_api_search_it_autocomplete_getSimilarWords extends rex_api_function
 
                 if ($similarWordsMode == '3') {
 
-                    $sql = sprintf("
+                    $sql = sprintf(
+                        "
               SELECT keyword FROM `%s` WHERE ( keyword LIKE :keyword OR colognephone = :soundex_ger  ) AND (clang = -1 OR clang = :clang) GROUP BY keyword ORDER BY count ",
                         rex::getTablePrefix() . rex::getTempPrefix() . 'search_it_keywords',
                     );
@@ -133,7 +138,8 @@ class rex_api_search_it_autocomplete_getSimilarWords extends rex_api_function
 
                 if ($similarWordsMode == '7') {
 
-                    $sql = sprintf("
+                    $sql = sprintf(
+                        "
               SELECT keyword FROM `%s` WHERE ( keyword LIKE :keyword OR soundex = :soundex OR metaphone = :metaphone OR colognephone = :soundex_ger) AND (clang = -1 OR clang = :clang) GROUP BY keyword ORDER BY count ",
                         rex::getTablePrefix() . rex::getTempPrefix() . 'search_it_keywords',
                     );
@@ -154,7 +160,9 @@ class rex_api_search_it_autocomplete_getSimilarWords extends rex_api_function
 
                         echo $db->getValue("keyword") . "\n";
 
-                        if ($i >= $maxSuggestion - 1) break;
+                        if ($i >= $maxSuggestion - 1) {
+                            break;
+                        }
 
                         $db->next();
                     }
