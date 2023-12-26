@@ -1,1 +1,0 @@
-<p>Meinten Sie <strong><?= $this->searchterm ?></strong>?</p>
